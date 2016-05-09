@@ -1,0 +1,38 @@
+---
+layout: post
+title: R blogging workflow Test
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+read_chunk("ExtendHiCSData.R")
+```
+
+In this post we test the Rmd to github pages workflow.
+
+# First markdown document
+
+This is the first markdown test with github pages and jekyll.
+
+```{r}
+library (data.table)
+
+set.seed(42)
+
+testData <- data.table(matrix(runif(10, 0, 5), 5, 2))
+names(testData) <- c("var_0001", "var_0002")
+
+testData
+```
+And features some fancy plots
+
+```{r pressure, echo=FALSE}
+plot(testData$var_0001, testData$var_0002)
+```
+
+# External Code Snippet
+
+```{r eval=F}
+<<generateRandomSubspaces>>
+```
+
