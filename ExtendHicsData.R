@@ -14,11 +14,12 @@ minSubspaceSize <- 2
 maxSubspaceSize <- 6
 numOutliersPerSubspace <- 4
 intervals <- list(c(0, 0.1), c(0.8, 0.9))
+
 # intervals <- list(c(0, 0.2))
 symmetric <- T
 # intervals <- list(c(0, 0.1), c(0.2, 0.3), c(0.4, 0.5), c(0.5, 0.6), c(0.7, 0.8), c(0.9, 1)
 
-# functions ---------------------------------------------------------------
+# helper functions ---------------------------------------------------------------
 
 inInterval <- function(intervals, x){
   any(sapply(intervals, function(a) a[1] < x & a[2] > x))
@@ -32,6 +33,15 @@ plotSubspace <- function(data, subspace){
   }else{
     plot(subset(data, select=subspace))
   }
+}
+
+generateValueNotInInterval <- function(intervals){
+    repeat{
+      tmp <- runif(1, 0, 1)
+      if(!inInterval(intervals, tmp)){
+        return(tmp)
+      } 
+    }
 }
 
 randomData <- as.data.table(matrix(runif(numObjects*numRelevantDim), numObjects, numRelevantDim))
@@ -86,7 +96,8 @@ for(s in subspaces){
   for(i in 1:numOutliersPerSubspace){
     randomObjectIndex <- ceiling(runif(1, 0, numObjects))
     randomData[randomObjectIndex, class:=1]
-    randomData[randomObjectIndex, names(randomData[,s, with=F]) := lapply(.SD[,s, with=F], function(x) runif(1, 0.6, 1))]
+    # randomData[randomObjectIndex, names(randomData[,s, with=F]) := lapply(.SD[,s, with=F], function(x) runif(1, 0.6, 1))]
+    randomData[randomObjectIndex, names(randomData[,s, with=F]) := lapply(.SD[,s, with=F], function(x) generateValueNotInInterval(intervals))]
   }
 }
 
