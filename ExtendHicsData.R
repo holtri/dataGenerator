@@ -13,9 +13,9 @@ numObjects <- 2000
 minSubspaceSize <- 2
 maxSubspaceSize <- 6
 numOutliersPerSubspace <- 4
-# intervals <- list(c(0, 0.2), c(0.5, 0.8))
-intervals <- list(c(0, 0.2))
-symmetric <- F
+intervals <- list(c(0, 0.1), c(0.8, 0.9))
+# intervals <- list(c(0, 0.2))
+symmetric <- T
 # intervals <- list(c(0, 0.1), c(0.2, 0.3), c(0.4, 0.5), c(0.5, 0.6), c(0.7, 0.8), c(0.9, 1)
 
 # functions ---------------------------------------------------------------
@@ -59,7 +59,10 @@ subspaces[[length(subspaces)+1]] <- c(counter:numRelevantDim)
 ## ---- end
 
 #create correlated subspaces
+progress <- 0
 for(s in subspaces){
+  print(paste("subspace", progress, "of", length(subspaces)))
+  progress <- progress + 1
   for(i in 1:numObjects){
     if(symmetric){
       j <- as.integer(ceiling(runif(1, (s[1] - 1), s[length(s)])))
@@ -69,8 +72,10 @@ for(s in subspaces){
       j <- as.integer(ceiling(runif(1, (s[1] - 1), s[length(s)] - 1)))   
       updateCol <- s[length(s)]
     }
-    while(!inInterval(intervals, randomData[[i,updateCol]])){
-      set(randomData, i=i, j=updateCol, value=runif(1, 0, 1))
+    for(dim in Filter(function(x) x!=updateCol, s)){
+      while(!inInterval(intervals, randomData[[i,dim]])){
+        set(randomData, i=i, j=dim, value=runif(1, 0, 1))
+      }      
     }
   }
 }
