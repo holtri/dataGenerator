@@ -1,0 +1,18 @@
+---
+title: "Generating Benchmark Data Sets for Subspace Outlier Detection"
+layout: post
+---
+
+Novel approaches for outlier detection in high dimensional data sets are typically benchmarked with real world and synthetic data sets. This blog post describes a simple approach to generate high dimensional data sets in which outliers are placed into correlated subspaces. Each of the outliers is placed into the subspace 
+
+```{r}
+summary(cars)
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

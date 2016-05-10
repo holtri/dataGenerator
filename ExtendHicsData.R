@@ -5,24 +5,27 @@ require(rgl)
 
 datasetNumber <- '7'
 
-numRelevantDim <- 150
-numNonRelevant <- 50
+numRelevantDim <- 30
+numNonRelevant <- 10
 
-numObjects <- 2000
+numObjects <- 1000
 
 minSubspaceSize <- 2
-maxSubspaceSize <- 6
+maxSubspaceSize <- 3
 numOutliersPerSubspace <- 4
-intervals <- list(c(0, 0.1), c(0.8, 0.9))
-
+intervals <- list(c(0, 0.3))
 # intervals <- list(c(0, 0.2))
+
 symmetric <- T
-# intervals <- list(c(0, 0.1), c(0.2, 0.3), c(0.4, 0.5), c(0.5, 0.6), c(0.7, 0.8), c(0.9, 1)
 
 # helper functions ---------------------------------------------------------------
 
 inInterval <- function(intervals, x){
   any(sapply(intervals, function(a) a[1] < x & a[2] > x))
+}
+
+allButOne <-function(v) {
+  length(v) - sum(v) ==1
 }
 
 plotSubspace <- function(data, subspace){
@@ -43,6 +46,7 @@ generateValueNotInInterval <- function(intervals){
       } 
     }
 }
+
 
 randomData <- as.data.table(matrix(runif(numObjects*numRelevantDim), numObjects, numRelevantDim))
 
@@ -82,10 +86,12 @@ for(s in subspaces){
       j <- as.integer(ceiling(runif(1, (s[1] - 1), s[length(s)] - 1)))   
       updateCol <- s[length(s)]
     }
-    for(dim in Filter(function(x) x!=updateCol, s)){
-      while(!inInterval(intervals, randomData[[i,dim]])){
+    tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
+    while(!(!any(tmp) | allButOne(tmp))){
+      for(dim in s){
         set(randomData, i=i, j=dim, value=runif(1, 0, 1))
-      }      
+      }
+      tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
     }
   }
 }
