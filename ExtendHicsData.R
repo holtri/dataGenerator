@@ -8,7 +8,7 @@ datasetNumber <- '7'
 numRelevantDim <- 30
 numNonRelevant <- 10
 
-numObjects <- 5000
+numObjects <- 1000
 
 minSubspaceSize <- 2
 maxSubspaceSize <- 3
@@ -47,6 +47,21 @@ generateValueNotInInterval <- function(intervals){
   }
 }
 
+generateInlier <- function(intervals, symmetric, dim, asymmetricAttribute = 1){
+  
+  asymmetricCondition <- FALSE
+  repeat{
+    dataObject <- runif(dim)
+    tmp <- sapply(dataObject, function(x) inInterval(intervals, x))  
+    if(!symmetric){
+      asymmetricCondition <- inInterval(intervals[1], dataObject[asymmetricAttribute])
+      
+    }
+    if(asymmetricCondition || (!any(tmp) | allButOne(tmp)) ){
+      return (dataObject)
+    }
+  }
+}
 
 randomData <- as.data.table(matrix(runif(numObjects*numRelevantDim), numObjects, numRelevantDim))
 
@@ -65,44 +80,61 @@ counter <- 1
 subspaces <- vector(mode="list")
 
 while(counter <= numRelevantDim - 2*minSubspaceSize ) {
-  tmp <- ceiling(runif(1, minSubspaceSize - 2, min(maxSubspaceSize, numRelevantDim - counter - minSubspaceSize) -1))
+  tmp <- ceiling(runif(1, minSubspaceSize - 2, 
+                       min(maxSubspaceSize, numRelevantDim - counter - minSubspaceSize) -1))
   subspaces[[length(subspaces)+1]] <- c(counter:(counter+tmp))
   counter <- counter + tmp + 1
 }
 subspaces[[length(subspaces)+1]] <- c(counter:numRelevantDim)
 ## ---- end
 
-#create correlated subspaces
-progress <- 0
+randomData <- c()
 for(s in subspaces){
-  asymmetricAttribute <- sample(s, 1, replace = T)
-  print(paste("subspace", progress, "of", length(subspaces)))
-  progress <- progress + 1
-  for(i in 1:numObjects){
-    if(symmetric){
-      tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
-      while(!(!any(tmp) | allButOne(tmp))){
-        for(dim in s){
-          set(randomData, i=i, j=dim, value=runif(1, 0, 1))
-        }
-        tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
-      }
-    }else{
-      
-      tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
-      
-      while(!(inInterval(intervals[1], randomData[[i, asymmetricAttribute]]) || 
-              (!any(tmp) | allButOne(tmp)))){
-        for(dim in s){
-          set(randomData, i=i, j=dim, value=runif(1, 0, 1))
-        }
-        
-        tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
-      }
-    }
-  }
+  print(s)
+  asymmetricAttribute <- sample(1:length(s), 1)
+  randomData <- cbind(randomData, 
+                      do.call(rbind, replicate(numObjects, 
+                                               generateInlier(intervals = intervals, 
+                                                              symmetric = symmetric, 
+                                                              dim = length(s), 
+                                                              asymmetricAttribute), simplify = F)))
 }
+randomData <- as.data.table(randomData)
+
+# #create correlated subspaces
+# progress <- 0
+# for(s in subspaces){
+#   asymmetricAttribute <- sample(s, 1, replace = T)
+#   print(paste("subspace", progress, "of", length(subspaces)))
+#   progress <- progress + 1
+#   for(i in 1:numObjects){
+#     
+#     if(symmetric){
+#       tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
+#       while(!(!any(tmp) | allButOne(tmp))){
+#         for(dim in s){
+#           set(randomData, i=i, j=dim, value=runif(1, 0, 1))
+#         }
+#         tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
+#       }
+#     }else{
+#       
+#       tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
+#       
+#       while(!(inInterval(intervals[1], randomData[[i, asymmetricAttribute]]) || 
+#               (!any(tmp) | allButOne(tmp)))){
+#         for(dim in s){
+#           set(randomData, i=i, j=dim, value=runif(1, 0, 1))
+#         }
+#         
+#         tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
+#       }
+#     }
+#   }
+# }
 randomData$class <- 0
+
+
 
 # place outliers
 for(s in subspaces){
