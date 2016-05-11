@@ -3,16 +3,80 @@ title: "Generating Benchmark Data Sets for Subspace Outlier Detection"
 layout: post
 ---
 
-Novel approaches for outlier detection in high dimensional data sets are typically benchmarked with real world and synthetic data sets. This blog post describes a simple approach to generate high dimensional data sets in which outliers are placed into correlated subspaces. Each of the outliers is placed into the subspace 
-
-```{r}
-summary(cars)
+```{r setup, include=FALSE}
+library(data.table)
+library(knitr)
+library(rgl)
+knit_hooks$set(webgl = hook_webgl)
+source("ExtendHiCSData.R")
+read_chunk("ExtendHiCSData.R")
+read_chunk("SampleExtendHiCSData.R")
 ```
 
-You can also embed plots, for example:
+Novel approaches for outlier detection in high dimensional data sets are typically benchmarked with real world and synthetic data sets. This blog post describes a simple approach to generate high dimensional data sets in which outliers are hidden in high-dimensional correlated subspaces. 
 
-```{r, echo=FALSE}
-plot(cars)
+The data generation is implemented as an R-script that allows to configure the following parameters:
+
+```{r param, eval=T}
+<<parameters>>
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+The number of relevant dimensions to create subspaces are split into subspaces. For example, a total of 10 dimensions could be split into two 2-dim and two 3-dim subspaces. For each of the subspaces, the objects are placed by generating a random vector that fulfills the following conditions:
+
+* For __symmetric__ subspaces: An __inlier__ lies either in none of the provided intervals or in all intervals but one. An __outlier__ lies either in all intervals or in exactly one.
+* For __asymmetric__ subspaces: The placement of inlying and outlying objects is the same like in symmetric spaces but the conditions are skipped for one of the intervals for one of the attributes in the subspace.
+
+Creating subspaces in such a manner guarantees that every outlier is not-visible in any of the lower-dimensional projections of the subspace.
+
+If we run the script with the above configuration, we create the following subspaces
+
+
+```{r sampleSpace, echo=T}
+set.seed(42)
+generated <- generateDataSet(datasetNumber, numRelevantDim, numNonRelevant, 
+                              numObjects, minSubspaceSize, maxSubspaceSize, 
+                              numOutliersPerSubspace, intervals, symmetric)
+
+```
+
+Two example plots for a two-dimensional space and three dimensional space (click on graphic to rotate) for the asymmetric case.
+
+```{r plot2d, echo=FALSE}
+plotSubspace(generated$data, generated$subspaces[[3]])
+
+```
+
+In the two-dimensional plot above there are four objects visible as outliers, the other outliers are hidden in this space. Also note that both one-dimensional projections cause the outliers that are visible in the subspace to disappear.
+
+```{r plot3d, webgl=TRUE, cache=F}
+plotSubspace(generated$data, generated$subspaces[[8]])
+
+```
+
+In the three dimensional space, spotting the outliers is somewhat harder but through focusing on the intervals we specified and rotating the graphic one can identify the areas where the outliers are visible.
+
+For the symmetric case, the subspaces are of the following form:
+
+```{r plot2d-2, echo=FALSE}
+set.seed(42)
+generated <- generateDataSet(datasetNumber, numRelevantDim, numNonRelevant, 
+                              numObjects, minSubspaceSize, maxSubspaceSize, 
+                              numOutliersPerSubspace, intervals, symmetric=TRUE)
+plotSubspace(generated$data, generated$subspaces[[3]])
+
+```
+
+
+We also specified non-relevant dimensions of these data sets. They are of the following form.
+
+```{r plot2d-nonRelevant, echo=FALSE}
+plot(generated$data$noise_0001, generated$data$noise_0002)
+```
+
+Those highly correlated low-dimensional subspaces are not revealing any additional outliers. They might, however, influence the detection of the relevant subspaces by dominating less-correlated but more important subspaces.
+
+
+### Source Code
+
+The code for creating data sets and the markup for this blogpost are [available on github](https://github.com/holtri/dataGenerator).
+
