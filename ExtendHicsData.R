@@ -14,7 +14,6 @@ minSubspaceSize <- 2
 maxSubspaceSize <- 3
 numOutliersPerSubspace <- 4
 intervals <- list(c(0, 0.3), c(0.6, 0.8))
-# intervals <- list(c(0, 0.2))
 
 symmetric <- F
 
@@ -25,7 +24,10 @@ inInterval <- function(intervals, x){
 }
 
 allButOne <-function(v) {
-  length(v) - sum(v) ==1
+  length(v) - sum(v) == 1
+}
+exactlyOne <- function(v){
+  length(v) == 11
 }
 
 plotSubspace <- function(data, subspace){
@@ -47,8 +49,7 @@ generateValueNotInInterval <- function(intervals){
   }
 }
 
-generateInlier <- function(intervals, symmetric, dim, asymmetricAttribute = 1){
-  
+generateObject <- function(intervals, symmetric, dim, asymmetricAttribute, type = "inlier"){
   asymmetricCondition <- FALSE
   repeat{
     dataObject <- runif(dim)
@@ -57,23 +58,22 @@ generateInlier <- function(intervals, symmetric, dim, asymmetricAttribute = 1){
       asymmetricCondition <- inInterval(intervals[1], dataObject[asymmetricAttribute])
       
     }
-    if(asymmetricCondition || (!any(tmp) | allButOne(tmp)) ){
-      return (dataObject)
-    }
+    switch(type,
+      outlier = {
+        if(!asymmetricCondition && (all(tmp) | exactlyOne(tmp))){
+          return (dataObject)
+        }      
+      },
+      inlier={
+        if(asymmetricCondition || (!any(tmp) | allButOne(tmp))){
+          return (dataObject)
+        }
+      }
+    )
   }
 }
 
 randomData <- as.data.table(matrix(runif(numObjects*numRelevantDim), numObjects, numRelevantDim))
-
-## ---- generateNonRelevantDimensions
-for(i in 1:(numNonRelevant /2)){
-  x1 <- runif(numObjects)
-  x2 <- sapply(x1, function(z) z + rnorm(1, 0, 0.01))
-  randomData <- cbind(randomData, x1, x2)
-}
-names(randomData) <- paste0("var_",formatC(1:ncol(randomData), width=4, format="d", flag="0"))
-
-## ---- end
 
 ## ---- generateRandomSubspaces
 counter <- 1
@@ -88,65 +88,49 @@ while(counter <= numRelevantDim - 2*minSubspaceSize ) {
 subspaces[[length(subspaces)+1]] <- c(counter:numRelevantDim)
 ## ---- end
 
+## ---- generateRandomObjects
 randomData <- c()
-for(s in subspaces){
+labels <- rep(0, numObjects)
+for(i in 1:length(subspaces)){
+  s <- subspaces[[i]]
   print(s)
   asymmetricAttribute <- sample(1:length(s), 1)
-  randomData <- cbind(randomData, 
-                      do.call(rbind, replicate(numObjects, 
-                                               generateInlier(intervals = intervals, 
-                                                              symmetric = symmetric, 
-                                                              dim = length(s), 
-                                                              asymmetricAttribute), simplify = F)))
-}
-randomData <- as.data.table(randomData)
-
-# #create correlated subspaces
-# progress <- 0
-# for(s in subspaces){
-#   asymmetricAttribute <- sample(s, 1, replace = T)
-#   print(paste("subspace", progress, "of", length(subspaces)))
-#   progress <- progress + 1
-#   for(i in 1:numObjects){
-#     
-#     if(symmetric){
-#       tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
-#       while(!(!any(tmp) | allButOne(tmp))){
-#         for(dim in s){
-#           set(randomData, i=i, j=dim, value=runif(1, 0, 1))
-#         }
-#         tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
-#       }
-#     }else{
-#       
-#       tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
-#       
-#       while(!(inInterval(intervals[1], randomData[[i, asymmetricAttribute]]) || 
-#               (!any(tmp) | allButOne(tmp)))){
-#         for(dim in s){
-#           set(randomData, i=i, j=dim, value=runif(1, 0, 1))
-#         }
-#         
-#         tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
-#       }
-#     }
-#   }
-# }
-randomData$class <- 0
-
-
-
-# place outliers
-for(s in subspaces){
-  for(i in 1:numOutliersPerSubspace){
-    randomObjectIndex <- ceiling(runif(1, 0, numObjects))
-    randomData[randomObjectIndex, class:=1]
-    # randomData[randomObjectIndex, names(randomData[,s, with=F]) := lapply(.SD[,s, with=F], function(x) runif(1, 0.6, 1))]
-    randomData[randomObjectIndex, names(randomData[,s, with=F]) := lapply(.SD[,s, with=F], function(x) generateValueNotInInterval(intervals))]
-  }
+  objects <- do.call(rbind, replicate(numObjects, generateObject(intervals = intervals, 
+                                                                 symmetric = symmetric, 
+                                                                 dim = length(s), 
+                                                                 asymmetricAttribute, 
+                                                                 "inlier"), simplify = F))
+  
+  outliers <- do.call(rbind, replicate(numOutliersPerSubspace, generateObject(intervals = intervals, 
+                                                                              symmetric = symmetric, 
+                                                                              dim = length(s), 
+                                                                              asymmetricAttribute, 
+                                                                              "outlier"),  simplify = F))
+  
+  outlierIndices <- sample(1:nrow(objects),4)
+  
+  objects[outlierIndices,]  <- outliers
+  labels[outlierIndices] <- i
+  randomData <- as.data.table(cbind(randomData, objects))
 }
 
-numberOutliers <- nrow(randomData[randomData$class==1])
+## ---- end
+
+## ---- generateNonRelevantDimensions
+for(i in 1:(numNonRelevant /2)){
+  x1 <- runif(numObjects)
+  x2 <- sapply(x1, function(z) z + rnorm(1, 0, 0.01))
+  randomData <- cbind(randomData, x1, x2)
+}
+
+## ---- end
+
+randomData <- cbind(randomData, labels)
+names(randomData) <- c(paste0("var_",formatC(1:numRelevantDim, width=4, format="d", flag="0")),
+                       paste0("noise_",formatC(1:numNonRelevant, width=4, format="d", flag="0")),
+                       "class")
+
+numberOutliers <- nrow(randomData[randomData$class>0])
 
 print(paste("number of generated outliers: ", numberOutliers))
 print(paste("number of generated subspaces: ", length(subspaces)))
