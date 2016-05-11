@@ -8,15 +8,15 @@ datasetNumber <- '7'
 numRelevantDim <- 30
 numNonRelevant <- 10
 
-numObjects <- 1000
+numObjects <- 5000
 
 minSubspaceSize <- 2
 maxSubspaceSize <- 3
 numOutliersPerSubspace <- 4
-intervals <- list(c(0, 0.3))
+intervals <- list(c(0, 0.3), c(0.6, 0.8))
 # intervals <- list(c(0, 0.2))
 
-symmetric <- T
+symmetric <- F
 
 # helper functions ---------------------------------------------------------------
 
@@ -39,12 +39,12 @@ plotSubspace <- function(data, subspace){
 }
 
 generateValueNotInInterval <- function(intervals){
-    repeat{
-      tmp <- runif(1, 0, 1)
-      if(!inInterval(intervals, tmp)){
-        return(tmp)
-      } 
-    }
+  repeat{
+    tmp <- runif(1, 0, 1)
+    if(!inInterval(intervals, tmp)){
+      return(tmp)
+    } 
+  }
 }
 
 
@@ -75,23 +75,30 @@ subspaces[[length(subspaces)+1]] <- c(counter:numRelevantDim)
 #create correlated subspaces
 progress <- 0
 for(s in subspaces){
+  asymmetricAttribute <- sample(s, 1, replace = T)
   print(paste("subspace", progress, "of", length(subspaces)))
   progress <- progress + 1
   for(i in 1:numObjects){
     if(symmetric){
-      j <- as.integer(ceiling(runif(1, (s[1] - 1), s[length(s)])))
-      updateCol <- j
-    }
-    else{
-      j <- as.integer(ceiling(runif(1, (s[1] - 1), s[length(s)] - 1)))   
-      updateCol <- s[length(s)]
-    }
-    tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
-    while(!(!any(tmp) | allButOne(tmp))){
-      for(dim in s){
-        set(randomData, i=i, j=dim, value=runif(1, 0, 1))
-      }
       tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
+      while(!(!any(tmp) | allButOne(tmp))){
+        for(dim in s){
+          set(randomData, i=i, j=dim, value=runif(1, 0, 1))
+        }
+        tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
+      }
+    }else{
+      
+      tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
+      
+      while(!(inInterval(intervals[1], randomData[[i, asymmetricAttribute]]) || 
+              (!any(tmp) | allButOne(tmp)))){
+        for(dim in s){
+          set(randomData, i=i, j=dim, value=runif(1, 0, 1))
+        }
+        
+        tmp <- sapply(randomData[i, s, with=F], function(x) inInterval(intervals, x))
+      }
     }
   }
 }
