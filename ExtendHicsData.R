@@ -46,7 +46,7 @@ generateDataSet <- function(datasetNumber,
                             numOutliersPerSubspace, 
                             intervals, 
                             symmetricProportion){
-  if((symmetricProportion>0) & !(length(intervals) > 1)){
+  if((symmetricProportion<1) & !(length(intervals) > 1)){
     stop("if asymmetric provide at least two intervals")
   }
   
