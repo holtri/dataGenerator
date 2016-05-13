@@ -113,7 +113,7 @@ generateDataSet <- function(datasetNumber,
                                                                                 asymmetricAttribute, 
                                                                                 "outlier"),  simplify = F))
     
-    outlierIndices <- sample(1:nrow(objects), 4)
+    outlierIndices <- sample(1:nrow(objects), numOutliersPerSubspace)
     
     objects[outlierIndices,]  <- outliers
     labels[outlierIndices] <- i
