@@ -6,20 +6,22 @@ writeInfo <- function(parameter, file){
   write(paste(deparse(substitute(parameter)), ":", parameter), file, ncolumns=1000, append = T)
 }
 
-datasetNumber <- '003'
+datasetNumber <- '012'
 
-numRelevantDim <- 300 # number dimensions to create correlated subspaces and place outliers
+numRelevantDim <- 200 # number dimensions to create correlated subspaces and place outliers
 numNonRelevantDim <- 0 # number dimensions to create highly correlated low-dimensional subspaces without outliers
 
-numObjects <- 1000 # total number of data objects
+numObjects <- 2000 # total number of data objects
 
 minSubspaceSize <- 2 # minimum dimensionality of subspaces that are created
-maxSubspaceSize <- 6 # maximum dimensionality of subspaces that are created
-numOutliersPerSubspace <- 4 #number of outliers that are placed in each of the relevant subspaces
-intervals <- list(c(0, 0.2), c(0.5,1)) # intervals to distinguish between regions of inliers and outliers
+maxSubspaceSize <- 5 # maximum dimensionality of subspaces that are created
+numOutliersPerSubspace <- 6 #number of outliers that are placed in each of the relevant subspaces
+intervals <- list(c(0, 0.4), c(0.6,1)) # intervals to distinguish between regions of inliers and outliers
 # intervals <- list(c(0.05, 1))
 
-symmetric <- 0.2 # if true, the distribution of data objects in the subspace is pairwise symmetric 
+symmetric <- 0.8 # proportion of subspaces that are correlated symmetrically
+onlyOutlierAsymm <- T
+
 
 generated <- generateDataSet(datasetNumber, 
                              numRelevantDim, 
@@ -29,7 +31,8 @@ generated <- generateDataSet(datasetNumber,
                              maxSubspaceSize, 
                              numOutliersPerSubspace, 
                              intervals, 
-                             symmetric)
+                             symmetric,
+                             onlyOutlierAsymm)
 
 generated
 write.table(generated$data, file=paste0("synth_multidim_", numNonRelevantDim + numRelevantDim, "_", datasetNumber, "_labeled.csv"), sep=";")
@@ -45,7 +48,7 @@ writeInfo(maxSubspaceSize, outInfo)
 writeInfo(numOutliersPerSubspace, outInfo)
 writeInfo(intervals, outInfo)
 writeInfo(symmetric, outInfo)
-
+writeInfo(onlyOutlierAsymm, outInfo)
 write("\nsubspaces\n=========", outInfo, ncolumns=1000, append=T)
 
 invisible(lapply(mapply(function(x,y) paste0(x, " - " , y), 

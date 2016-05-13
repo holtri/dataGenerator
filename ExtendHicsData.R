@@ -45,7 +45,8 @@ generateDataSet <- function(datasetNumber,
                             maxSubspaceSize, 
                             numOutliersPerSubspace, 
                             intervals, 
-                            symmetricProportion){
+                            symmetricProportion,
+                            onlyOutlierAsymm){
   if((symmetricProportion<1) & !(length(intervals) > 1)){
     stop("if asymmetric provide at least two intervals")
   }
@@ -82,13 +83,17 @@ generateDataSet <- function(datasetNumber,
   counter <- 1
   subspaces <- vector(mode="list")
   
-  while(counter <= numRelevantDim - 2*minSubspaceSize ) {
-    tmp <- ceiling(runif(1, minSubspaceSize - 2, 
-                         min(maxSubspaceSize, numRelevantDim - counter - minSubspaceSize) -1))
-    subspaces[[length(subspaces)+1]] <- c(counter:(counter+tmp))
-    counter <- counter + tmp + 1
+  while(counter <= numRelevantDim - maxSubspaceSize - minSubspaceSize ) {
+    tmp <- sample(minSubspaceSize:maxSubspaceSize, 1, replace=T)
+    
+    subspaces[[length(subspaces)+1]] <- c(counter:(counter+tmp-1))
+    counter <- counter + tmp 
   }
+  
+  subspaces[[length(subspaces)+1]] <- c(counter:(counter + minSubspaceSize -1))
+  counter <- counter + minSubspaceSize
   subspaces[[length(subspaces)+1]] <- c(counter:numRelevantDim)
+
   ## ---- end
   
   ## ---- generateRandomObjects
@@ -107,16 +112,20 @@ generateDataSet <- function(datasetNumber,
                                                                    asymmetricAttribute, 
                                                                    "inlier"), simplify = F))
     
-    outliers <- do.call(rbind, replicate(numOutliersPerSubspace, generateObject(intervals = intervals, 
-                                                                                symmetric = sym, 
-                                                                                dim = length(s), 
-                                                                                asymmetricAttribute, 
-                                                                                "outlier"),  simplify = F))
+    if(!(onlyOutlierAsymm & !sym)){
+      outliers <- do.call(rbind, replicate(numOutliersPerSubspace, generateObject(intervals = intervals, 
+                                                                                  symmetric = sym, 
+                                                                                  dim = length(s), 
+                                                                                  asymmetricAttribute, 
+                                                                                  "outlier"),  simplify = F))   
+      outlierIndices <- sample(1:nrow(objects), numOutliersPerSubspace)
+      
+      objects[outlierIndices,]  <- outliers
+      labels[outlierIndices] <- i
+    }
+
     
-    outlierIndices <- sample(1:nrow(objects), numOutliersPerSubspace)
     
-    objects[outlierIndices,]  <- outliers
-    labels[outlierIndices] <- i
     randomData <- as.data.table(cbind(randomData, objects))
   }
   
