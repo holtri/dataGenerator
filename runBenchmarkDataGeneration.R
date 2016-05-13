@@ -6,23 +6,24 @@ writeInfo <- function(parameter, file){
   write(paste(deparse(substitute(parameter)), ":", parameter), file, ncolumns=1000, append = T)
 }
 
-datasetNumber <- '001'
+datasetNumber <- '003'
 
-numRelevantDim <- 100 # number dimensions to create correlated subspaces and place outliers
-numNonRelevant <- 50 # number dimensions to create highly correlated low-dimensional subspaces without outliers
+numRelevantDim <- 300 # number dimensions to create correlated subspaces and place outliers
+numNonRelevantDim <- 0 # number dimensions to create highly correlated low-dimensional subspaces without outliers
 
 numObjects <- 1000 # total number of data objects
 
 minSubspaceSize <- 2 # minimum dimensionality of subspaces that are created
-maxSubspaceSize <- 5 # maximum dimensionality of subspaces that are created
+maxSubspaceSize <- 6 # maximum dimensionality of subspaces that are created
 numOutliersPerSubspace <- 4 #number of outliers that are placed in each of the relevant subspaces
-intervals <- list(c(0.05, 1)) # intervals to distinguish between regions of inliers and outliers
+intervals <- list(c(0, 0.2), c(0.5,1)) # intervals to distinguish between regions of inliers and outliers
+# intervals <- list(c(0.05, 1))
 
-symmetric <- T # if true, the distribution of data objects in the subspace is pairwise symmetric 
+symmetric <- 0.2 # if true, the distribution of data objects in the subspace is pairwise symmetric 
 
 generated <- generateDataSet(datasetNumber, 
                              numRelevantDim, 
-                             numNonRelevant, 
+                             numNonRelevantDim, 
                              numObjects, 
                              minSubspaceSize, 
                              maxSubspaceSize, 
@@ -31,13 +32,13 @@ generated <- generateDataSet(datasetNumber,
                              symmetric)
 
 generated
-write.table(generated$data, file=paste0("synth_multidim_", numNonRelevant + numRelevantDim, "_", datasetNumber, "_labeled.csv"), sep=";")
-outInfo <- paste0("synth_multidim_",numNonRelevant + numRelevantDim, "_", datasetNumber, "_labeled.info")
+write.table(generated$data, file=paste0("synth_multidim_", numNonRelevantDim + numRelevantDim, "_", datasetNumber, "_labeled.csv"), sep=";")
+outInfo <- paste0("synth_multidim_",numNonRelevantDim + numRelevantDim, "_", datasetNumber, "_labeled.info")
 
 
 write("Config\n======", outInfo, ncolumns=1000)
 writeInfo(numRelevantDim, outInfo)
-writeInfo(numNonRelevant, outInfo)
+writeInfo(numNonRelevantDim, outInfo)
 writeInfo(numObjects, outInfo)
 writeInfo(minSubspaceSize, outInfo)
 writeInfo(maxSubspaceSize, outInfo)
@@ -45,20 +46,26 @@ writeInfo(numOutliersPerSubspace, outInfo)
 writeInfo(intervals, outInfo)
 writeInfo(symmetric, outInfo)
 
-write("subspaces\n=========", outInfo, ncolumns=1000, append=T)
+write("\nsubspaces\n=========", outInfo, ncolumns=1000, append=T)
 
-invisible(lapply(lapply(seq_along(generated$subspaces), 
-                        function(x) paste0(x, ": [", lapply(generated$subspaces[x], 
-                                                            function(x) paste0(x, collapse=",")), "]")) , 
+invisible(lapply(mapply(function(x,y) paste0(x, " - " , y), 
+                        lapply(seq_along(generated$subspaces), 
+                               function(x) paste0(x, ": [", lapply(generated$subspaces[x], 
+                                                                   function(x) paste0(x, collapse=",")), "]")),
+                        generated$subspaceTypes) , 
                  write, outInfo, append=TRUE, ncolumns=1000))
 
-write("outliers\n========", outInfo, ncolumns=1000, append=T)
-
+write("\noutliers\n========", outInfo, ncolumns=1000, append=T)
+write(paste("total number of outliers:", sum(generated$data$class >0), "\n"), outInfo, ncolumns=1000, append=T)
 outliers <- data.table("index"=generated$data[, which(class>0)], "class"=generated$data[class>0, class])
 outliers <- outliers[order(class, index),lapply(.SD, paste0, collapse=","), by=class]
 outliers[, index:=lapply(index, function(x) paste0(" {",x,"}"))]
 outliers <- apply(outliers, 1, function(x) paste(x, collapse = ":"))
 
 invisible(lapply(outliers, write, outInfo, append=T, ncolumns=1000))
+
+
+
+
 
 
