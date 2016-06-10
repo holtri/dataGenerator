@@ -143,13 +143,13 @@ generateDataSet <- function(datasetNumber,
   }
   
   ## ---- end
-  
+  randomData <- round(randomData, 4)
   randomData <- cbind(randomData, labels)
   
   ## ---- renameData
   if(numNonRelevantDim > 0){
     names(randomData) <- c(paste0("var_",formatC(1:numRelevantDim, width=4, format="d", flag="0")),
-                         paste0("noise_",formatC(1:numNonRelevantDim, width=4, format="d", flag="0")),
+                         paste0("var_",formatC(1:numNonRelevantDim, width=4, format="d", flag="0")),
                          "class")
   }
   else{

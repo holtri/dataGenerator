@@ -1,0 +1,176 @@
+Config
+======
+numRelevantDim : 50
+numNonRelevantDim : 250
+numObjects : 2000
+minSubspaceSize : 2
+maxSubspaceSize : 5
+numOutliersPerSubspace : 6
+intervals : c(0.05, 1)
+symmetric : 1
+onlyOutlierAsymm : FALSE
+
+subspaces
+=========
+1: [1,2,3,4,5] - symmetric
+2: [6,7] - symmetric
+3: [8,9,10,11] - symmetric
+4: [12,13,14,15] - symmetric
+5: [16,17,18] - symmetric
+6: [19,20] - symmetric
+7: [21,22,23] - symmetric
+8: [24,25,26] - symmetric
+9: [27,28] - symmetric
+10: [29,30,31] - symmetric
+11: [32,33] - symmetric
+12: [34,35] - symmetric
+13: [36,37,38,39,40] - symmetric
+14: [41,42,43,44,45] - symmetric
+15: [46,47] - symmetric
+16: [48,49,50] - symmetric
+17: [51,52] - irrelevant
+18: [52,53] - irrelevant
+19: [53,54] - irrelevant
+20: [54,55] - irrelevant
+21: [55,56] - irrelevant
+22: [56,57] - irrelevant
+23: [57,58] - irrelevant
+24: [58,59] - irrelevant
+25: [59,60] - irrelevant
+26: [60,61] - irrelevant
+27: [61,62] - irrelevant
+28: [62,63] - irrelevant
+29: [63,64] - irrelevant
+30: [64,65] - irrelevant
+31: [65,66] - irrelevant
+32: [66,67] - irrelevant
+33: [67,68] - irrelevant
+34: [68,69] - irrelevant
+35: [69,70] - irrelevant
+36: [70,71] - irrelevant
+37: [71,72] - irrelevant
+38: [72,73] - irrelevant
+39: [73,74] - irrelevant
+40: [74,75] - irrelevant
+41: [75,76] - irrelevant
+42: [76,77] - irrelevant
+43: [77,78] - irrelevant
+44: [78,79] - irrelevant
+45: [79,80] - irrelevant
+46: [80,81] - irrelevant
+47: [81,82] - irrelevant
+48: [82,83] - irrelevant
+49: [83,84] - irrelevant
+50: [84,85] - irrelevant
+51: [85,86] - irrelevant
+52: [86,87] - irrelevant
+53: [87,88] - irrelevant
+54: [88,89] - irrelevant
+55: [89,90] - irrelevant
+56: [90,91] - irrelevant
+57: [91,92] - irrelevant
+58: [92,93] - irrelevant
+59: [93,94] - irrelevant
+60: [94,95] - irrelevant
+61: [95,96] - irrelevant
+62: [96,97] - irrelevant
+63: [97,98] - irrelevant
+64: [98,99] - irrelevant
+65: [99,100] - irrelevant
+66: [100,101] - irrelevant
+67: [101,102] - irrelevant
+68: [102,103] - irrelevant
+69: [103,104] - irrelevant
+70: [104,105] - irrelevant
+71: [105,106] - irrelevant
+72: [106,107] - irrelevant
+73: [107,108] - irrelevant
+74: [108,109] - irrelevant
+75: [109,110] - irrelevant
+76: [110,111] - irrelevant
+77: [111,112] - irrelevant
+78: [112,113] - irrelevant
+79: [113,114] - irrelevant
+80: [114,115] - irrelevant
+81: [115,116] - irrelevant
+82: [116,117] - irrelevant
+83: [117,118] - irrelevant
+84: [118,119] - irrelevant
+85: [119,120] - irrelevant
+86: [120,121] - irrelevant
+87: [121,122] - irrelevant
+88: [122,123] - irrelevant
+89: [123,124] - irrelevant
+90: [124,125] - irrelevant
+91: [125,126] - irrelevant
+92: [126,127] - irrelevant
+93: [127,128] - irrelevant
+94: [128,129] - irrelevant
+95: [129,130] - irrelevant
+96: [130,131] - irrelevant
+97: [131,132] - irrelevant
+98: [132,133] - irrelevant
+99: [133,134] - irrelevant
+100: [134,135] - irrelevant
+101: [135,136] - irrelevant
+102: [136,137] - irrelevant
+103: [137,138] - irrelevant
+104: [138,139] - irrelevant
+105: [139,140] - irrelevant
+106: [140,141] - irrelevant
+107: [141,142] - irrelevant
+108: [142,143] - irrelevant
+109: [143,144] - irrelevant
+110: [144,145] - irrelevant
+111: [145,146] - irrelevant
+112: [146,147] - irrelevant
+113: [147,148] - irrelevant
+114: [148,149] - irrelevant
+115: [149,150] - irrelevant
+116: [150,151] - irrelevant
+117: [151,152] - irrelevant
+118: [152,153] - irrelevant
+119: [153,154] - irrelevant
+120: [154,155] - irrelevant
+121: [155,156] - irrelevant
+122: [156,157] - irrelevant
+123: [157,158] - irrelevant
+124: [158,159] - irrelevant
+125: [159,160] - irrelevant
+126: [160,161] - irrelevant
+127: [161,162] - irrelevant
+128: [162,163] - irrelevant
+129: [163,164] - irrelevant
+130: [164,165] - irrelevant
+131: [165,166] - irrelevant
+132: [166,167] - irrelevant
+133: [167,168] - irrelevant
+134: [168,169] - irrelevant
+135: [169,170] - irrelevant
+136: [170,171] - irrelevant
+137: [171,172] - irrelevant
+138: [172,173] - irrelevant
+139: [173,174] - irrelevant
+140: [174,175] - irrelevant
+141: [175,176] - irrelevant
+
+outliers
+========
+total number of outliers: 96 
+
+1: {66,716,856,1053,1155,1822}
+2: {530,743,1147,1218,1268,1472}
+3: {899,969,1227,1387,1542,1693}
+4: {435,527,645,669,809,1560}
+5: {35,44,796,858,864,1184}
+6: {386,668,854,1018,1277,1840}
+7: {197,399,595,1197,1832,1912}
+8: {607,807,825,1134,1332,1978}
+9: {37,202,493,1087,1089,1132}
+10: {22,661,761,1632,1907,1973}
+11: {300,541,1495,1499,1567,1952}
+12: {125,393,558,1297,1353,1634}
+13: {99,704,1304,1326,1444,1529}
+14: {142,285,646,1210,1322,1563}
+15: {533,550,790,1233,1667,1700}
+16: {208,350,467,730,1730,1886}

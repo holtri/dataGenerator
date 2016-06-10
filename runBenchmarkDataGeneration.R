@@ -6,21 +6,21 @@ writeInfo <- function(parameter, file){
   write(paste(deparse(substitute(parameter)), ":", parameter), file, ncolumns=1000, append = T)
 }
 
-datasetNumber <- '012'
+datasetNumber <- '006'
 
-numRelevantDim <- 200 # number dimensions to create correlated subspaces and place outliers
-numNonRelevantDim <- 0 # number dimensions to create highly correlated low-dimensional subspaces without outliers
+numRelevantDim <- 50 # number dimensions to create correlated subspaces and place outliers
+numNonRelevantDim <- 200 # number dimensions to create highly correlated low-dimensional subspaces without outliers
 
 numObjects <- 2000 # total number of data objects
 
 minSubspaceSize <- 2 # minimum dimensionality of subspaces that are created
 maxSubspaceSize <- 5 # maximum dimensionality of subspaces that are created
 numOutliersPerSubspace <- 6 #number of outliers that are placed in each of the relevant subspaces
-intervals <- list(c(0, 0.4), c(0.6,1)) # intervals to distinguish between regions of inliers and outliers
+intervals <- list(c(0.05, 1)) # intervals to distinguish between regions of inliers and outliers
 # intervals <- list(c(0.05, 1))
 
-symmetric <- 0.8 # proportion of subspaces that are correlated symmetrically
-onlyOutlierAsymm <- T
+symmetric <- 1 # proportion of subspaces that are correlated symmetrically
+onlyOutlierAsymm <- F
 
 
 generated <- generateDataSet(datasetNumber, 
@@ -34,8 +34,8 @@ generated <- generateDataSet(datasetNumber,
                              symmetric,
                              onlyOutlierAsymm)
 
-generated
-write.table(generated$data, file=paste0("synth_multidim_", numNonRelevantDim + numRelevantDim, "_", datasetNumber, "_labeled.csv"), sep=";")
+# generated 
+write.table(generated$data, file=paste0("synth_multidim_", numNonRelevantDim + numRelevantDim, "_", datasetNumber, "_labeled.csv"), sep=";", row.names = F)
 outInfo <- paste0("synth_multidim_",numNonRelevantDim + numRelevantDim, "_", datasetNumber, "_labeled.info")
 
 
