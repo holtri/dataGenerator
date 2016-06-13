@@ -1,0 +1,150 @@
+Config
+======
+numRelevantDim : 100
+numNonRelevantDim : 150
+numObjects : 2000
+minSubspaceSize : 2
+maxSubspaceSize : 5
+numOutliersPerSubspace : 6
+intervals : c(0.05, 1)
+symmetric : 1
+onlyOutlierAsymm : FALSE
+
+subspaces
+=========
+1: [1,2,3,4] - symmetric
+2: [5,6,7,8] - symmetric
+3: [9,10,11,12,13] - symmetric
+4: [14,15] - symmetric
+5: [16,17] - symmetric
+6: [18,19] - symmetric
+7: [20,21] - symmetric
+8: [22,23,24,25,26] - symmetric
+9: [27,28,29,30,31] - symmetric
+10: [32,33,34,35] - symmetric
+11: [36,37,38,39,40] - symmetric
+12: [41,42,43,44,45] - symmetric
+13: [46,47,48,49] - symmetric
+14: [50,51,52] - symmetric
+15: [53,54,55,56] - symmetric
+16: [57,58,59,60,61] - symmetric
+17: [62,63] - symmetric
+18: [64,65] - symmetric
+19: [66,67,68,69] - symmetric
+20: [70,71,72,73] - symmetric
+21: [74,75,76] - symmetric
+22: [77,78,79,80,81] - symmetric
+23: [82,83,84,85,86] - symmetric
+24: [87,88] - symmetric
+25: [89,90,91] - symmetric
+26: [92,93,94,95,96] - symmetric
+27: [97,98] - symmetric
+28: [99,100] - symmetric
+29: [101,102] - irrelevant
+30: [103,104] - irrelevant
+31: [105,106] - irrelevant
+32: [107,108] - irrelevant
+33: [109,110] - irrelevant
+34: [111,112] - irrelevant
+35: [113,114] - irrelevant
+36: [115,116] - irrelevant
+37: [117,118] - irrelevant
+38: [119,120] - irrelevant
+39: [121,122] - irrelevant
+40: [123,124] - irrelevant
+41: [125,126] - irrelevant
+42: [127,128] - irrelevant
+43: [129,130] - irrelevant
+44: [131,132] - irrelevant
+45: [133,134] - irrelevant
+46: [135,136] - irrelevant
+47: [137,138] - irrelevant
+48: [139,140] - irrelevant
+49: [141,142] - irrelevant
+50: [143,144] - irrelevant
+51: [145,146] - irrelevant
+52: [147,148] - irrelevant
+53: [149,150] - irrelevant
+54: [151,152] - irrelevant
+55: [153,154] - irrelevant
+56: [155,156] - irrelevant
+57: [157,158] - irrelevant
+58: [159,160] - irrelevant
+59: [161,162] - irrelevant
+60: [163,164] - irrelevant
+61: [165,166] - irrelevant
+62: [167,168] - irrelevant
+63: [169,170] - irrelevant
+64: [171,172] - irrelevant
+65: [173,174] - irrelevant
+66: [175,176] - irrelevant
+67: [177,178] - irrelevant
+68: [179,180] - irrelevant
+69: [181,182] - irrelevant
+70: [183,184] - irrelevant
+71: [185,186] - irrelevant
+72: [187,188] - irrelevant
+73: [189,190] - irrelevant
+74: [191,192] - irrelevant
+75: [193,194] - irrelevant
+76: [195,196] - irrelevant
+77: [197,198] - irrelevant
+78: [199,200] - irrelevant
+79: [201,202] - irrelevant
+80: [203,204] - irrelevant
+81: [205,206] - irrelevant
+82: [207,208] - irrelevant
+83: [209,210] - irrelevant
+84: [211,212] - irrelevant
+85: [213,214] - irrelevant
+86: [215,216] - irrelevant
+87: [217,218] - irrelevant
+88: [219,220] - irrelevant
+89: [221,222] - irrelevant
+90: [223,224] - irrelevant
+91: [225,226] - irrelevant
+92: [227,228] - irrelevant
+93: [229,230] - irrelevant
+94: [231,232] - irrelevant
+95: [233,234] - irrelevant
+96: [235,236] - irrelevant
+97: [237,238] - irrelevant
+98: [239,240] - irrelevant
+99: [241,242] - irrelevant
+100: [243,244] - irrelevant
+101: [245,246] - irrelevant
+102: [247,248] - irrelevant
+103: [249,250] - irrelevant
+
+outliers
+========
+total number of outliers: 159 
+
+1: {190,304,331,914,1989,1990}
+2: {31,113,314,431,955,1767}
+3: {523,1125,1376,1491,1604,1964}
+4: {1,273,645,690,1170}
+5: {60,356,528,1102,1728}
+6: {793,1191,1399,1740,1788}
+7: {387,390,991,1044,1334}
+8: {1006,1043,1106,1624,1758,1822}
+9: {695,873,1108,1699,1817,1937}
+10: {245,415,893,1264,1819,1915}
+11: {145,288,605,945,1131,1391}
+12: {160,419,913,1269,1475,1754}
+13: {83,485,1309,1369,1410,1471}
+14: {22,894,1384,1512,1809}
+15: {127,404,878,1053,1312,1344}
+16: {540,1000,1255,1374,1608,1950}
+17: {428,612,1511,1586,1825}
+18: {767,820,1158,1602,1695}
+19: {177,244,931,1060,1832,1995}
+20: {101,455,960,1168,1438,1965}
+21: {663,683,1011,1763}
+22: {92,407,639,1443,1459,1952}
+23: {120,376,444,1502,1869,1913}
+24: {112,737,889,1193,1924,1983}
+25: {333,1140,1535,1744,1839,1923}
+26: {2,287,316,521,1331,1462}
+27: {1207,1411,1457,1571,1637,1993}
+28: {50,482,1554,1633,1806,1843}

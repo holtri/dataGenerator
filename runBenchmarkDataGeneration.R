@@ -6,10 +6,10 @@ writeInfo <- function(parameter, file){
   write(paste(deparse(substitute(parameter)), ":", parameter), file, ncolumns=1000, append = T)
 }
 
-datasetNumber <- '006'
+datasetNumber <- '018'
 
-numRelevantDim <- 50 # number dimensions to create correlated subspaces and place outliers
-numNonRelevantDim <- 200 # number dimensions to create highly correlated low-dimensional subspaces without outliers
+numRelevantDim <- 20 # number dimensions to create correlated subspaces and place outliers
+numNonRelevantDim <- 230 # number dimensions to create highly correlated low-dimensional subspaces without outliers
 
 numObjects <- 2000 # total number of data objects
 

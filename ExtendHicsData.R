@@ -132,14 +132,19 @@ generateDataSet <- function(datasetNumber,
   ## ---- end
   
   ## ---- generateNonRelevantDimensions
+  # two-dimensional correlated dimensions
   if(numNonRelevantDim > 0){
-    for(i in 1:(numNonRelevantDim/2)){
+    for(i in seq(1,numNonRelevantDim, by=2)){
       subspaces[[length(subspaces)+1]] <- c(numRelevantDim + i, numRelevantDim + i + 1)
       subspaceType[length(subspaceType)+1] <- "irrelevant"
       x1 <- runif(numObjects)
       x2 <- sapply(x1, function(z) z + rnorm(1, 0, 0.01))
       randomData <- cbind(randomData, x1, x2)
-    }  
+    }
+    # uncorrelated dimensions
+    # for(i in 1:(numNonRelevantDim/2 - 1)){
+    #   randomData <- cbind(randomData, runif(numObjects))
+    # }
   }
   
   ## ---- end
@@ -149,7 +154,7 @@ generateDataSet <- function(datasetNumber,
   ## ---- renameData
   if(numNonRelevantDim > 0){
     names(randomData) <- c(paste0("var_",formatC(1:numRelevantDim, width=4, format="d", flag="0")),
-                         paste0("var_",formatC(1:numNonRelevantDim, width=4, format="d", flag="0")),
+                         paste0("var_",formatC((numRelevantDim+1):(numRelevantDim + numNonRelevantDim), width=4, format="d", flag="0")),
                          "class")
   }
   else{
